@@ -1,5 +1,6 @@
 import { every15Minute, everyMinute } from 'https://deno.land/x/deno_cron/cron.ts';
 import { config } from 'https://deno.land/x/dotenv/mod.ts';
+import { notify } from 'https://deno.land/x/deno_notify@0.3.0/ts/prepared.ts';
 
 import emailClient from './email-client.ts';
 
@@ -37,7 +38,15 @@ const makeProccess = async () => {
     const areDiferentData = compareData(newData.estados, curentData);
     if(areDiferentData) {
       curentData = newData.estados;
-      const result = await sendEmail('Algo cambio!', JSON.stringify(newData));
+      console.log(" hubo cambio");
+      notify({
+        title: 'Hubo un cambio!',
+        message: newData.estados[newData.estados.length-1].descripcion,
+        icon: {
+          app: "Terminal",
+        },
+        sound: "Basso",
+      });
     }
   } catch (error) {
     console.error(error)
